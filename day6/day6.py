@@ -1,68 +1,73 @@
-lines = [line.rstrip("\n") for line in open("input.txt")]
+def solve():
 
-width = max(len(line) for line in lines)
-normalized = [line.ljust(width) for line in lines]
+    print('--- Day 6 ---')
 
-problems = []
-current_cols = []
+    from pathlib import Path
+    lines = [line.rstrip("\n") for line in open(Path('day6/input.txt'))]
 
-for col in range(width):
-    column_chars = [row[col] for row in normalized]
-    if all(ch == " " for ch in column_chars):
-        if current_cols:
-            problems.append(current_cols)
-            current_cols = []
-    else:
-        current_cols.append(column_chars)
+    width = max(len(line) for line in lines)
+    normalized = [line.ljust(width) for line in lines]
 
-# last problem
-if current_cols:
-    problems.append(current_cols)
+    problems = []
+    current_cols = []
 
-totals = []
+    for col in range(width):
+        column_chars = [row[col] for row in normalized]
+        if all(ch == " " for ch in column_chars):
+            if current_cols:
+                problems.append(current_cols)
+                current_cols = []
+        else:
+            current_cols.append(column_chars)
 
-for prob in problems:
-    rows = ["".join(col[i] for col in prob) for i in range(len(lines))]
-    rows = [r.strip() for r in rows if r.strip()]
+    # last problem
+    if current_cols:
+        problems.append(current_cols)
 
-    *nums, op = rows
+    totals = []
 
-    nums = list(map(int, nums))
+    for prob in problems:
+        rows = ["".join(col[i] for col in prob) for i in range(len(lines))]
+        rows = [r.strip() for r in rows if r.strip()]
 
-    match op:
-        case '+': total = sum(nums)
-        case '*':
-            total = 1
-            for n in nums:
-                total *= n
+        *nums, op = rows
 
-    totals.append(total)
+        nums = list(map(int, nums))
 
-print("Part 1 total:", sum(totals))
+        match op:
+            case '+': total = sum(nums)
+            case '*':
+                total = 1
+                for n in nums:
+                    total *= n
 
-totals_p2 = []
+        totals.append(total)
 
-for prob in problems:
-    rows = ["".join(col[i] for col in prob) for i in range(len(lines))]
-    op_row = rows[-1]
-    op = op_row.strip()[-1] 
-    num_rows = rows[:-1]
-    num_cols = list(zip(*num_rows))
-    num_cols_rtl = reversed(num_cols)
+    print("Part 1 total:", sum(totals))
 
-    nums = []
-    for col in num_cols_rtl:
-        num_str = "".join(col).strip()
-        if num_str:
-            nums.append(int(num_str))
+    totals_p2 = []
 
-    match op:
-        case '+': total = sum(nums)
-        case '*':
-            total = 1
-            for n in nums:
-                total *= n
-    
-    totals_p2.append(total)
+    for prob in problems:
+        rows = ["".join(col[i] for col in prob) for i in range(len(lines))]
+        op_row = rows[-1]
+        op = op_row.strip()[-1]
+        num_rows = rows[:-1]
+        num_cols = list(zip(*num_rows))
+        num_cols_rtl = reversed(num_cols)
 
-print("Part 2 total:", sum(totals_p2))
+        nums = []
+        for col in num_cols_rtl:
+            num_str = "".join(col).strip()
+            if num_str:
+                nums.append(int(num_str))
+
+        match op:
+            case '+': total = sum(nums)
+            case '*':
+                total = 1
+                for n in nums:
+                    total *= n
+
+        totals_p2.append(total)
+
+    print("Part 2 total:", sum(totals_p2))
